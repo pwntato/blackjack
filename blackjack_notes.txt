@@ -1,0 +1,27 @@
+dealer + 1-7 players
+blackjack beat 21
+blackjack pays out 1.5x
+4-8 decks
+
+
+OR
+video style blackjack
+  1 player
+  1 deck
+  reshuffle every deal
+  blackjack pays out 1x
+  
+  
+GENERAL
+dealer reveals blackjack immidiately
+insurance if dealer shows an ace
+  half of main bet, pays 2x if dealer has blackjack
+dealer gets 1 face up, one face down
+players get 2 face up
+actions:
+  hit
+  stand
+  double - only on first action, after split
+  split - only for two equal value cards, first action, split to 4 hands, no hitting or blackjack on split aces
+dealer hits on 16
+
