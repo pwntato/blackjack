@@ -15,10 +15,10 @@ class Deck
     card
   end
   
-  def shuffle
+  def shuffle!(shuffles=1)
     @deck += @burnt 
     @burnt = []
-    7.times { |i| @deck.shuffle! }
+    shuffles.times { @deck.shuffle! }
   end
   
   def length
