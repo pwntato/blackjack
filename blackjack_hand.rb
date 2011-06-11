@@ -21,10 +21,21 @@ class BlackjackHand
     @soft = (((full_value - value) % 10) != ace_count)
     value
   end
+  
+  def split
+    return unless is_pair?
+    new_hand = BlackjackHand.new
+    new_hand << @cards.shift
+    new_hand
+  end
+  
+  def is_pair?
+    @cards.length == 2 and @cards[0].value == @cards[1].value
+  end
 
   def to_s
     @cards.join(', ')
   end
   
-  attr_reader: :cards, :soft
+  attr_reader :cards, :soft
 end

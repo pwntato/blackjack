@@ -1,6 +1,8 @@
+require 'blackjack_hand'
+
 class BlackjackPlayer
   def initialize
-    @hand = Hand.new
+    new_hand
     @money = 100
   end
   
@@ -8,21 +10,50 @@ class BlackjackPlayer
     @hand << card
   end
   
-  def action(bj_table)
-    puts "Dealer: #{bj_table.dealer_cards.each { |card| card.to_s }}"
-    puts "#{@hand}: #{@hand.bj_value}"
-    puts "Money: #{@money}"
+  def action(table)
+    puts "\nDealer: #{table.dealer_cards.each { |card| card.to_s }}"
+    puts "Hand #{hand_number+1}: #{@hand}: #{@hand.bj_value}"
+    puts "Money: #{@money}\n"
     table.options.each_with_index do |option, i|
-      puts "#{i}) option"
+      puts "#{i+1}) #{option}"
     end
     puts "What would you like to do: "
-    table.options[gets]
+    table.options[gets.to_i-1]
+  end
+  
+  def split
+    return unless can_split?
+    @hands << @hand.split
+  end
+  
+  def can_split?
+    @hands.length < 4 and @hand.is_pair?
+  end
+  
+  def next_hand
+    @hand = @hands[hand_number + 1] || nil
+  end
+  
+  def hand_number
+    @hands.index(@hand)
   end
   
   def new_hand
-    @hand = Hand.new
+    @hand = BlackjackHand.new
+    @hands = [ @hand ]
   end
   
-  attr_reader: :hand
-  attr_accessor: :money
+  def can_afford(bets, new_bet)
+    total = new_bet
+    bets.each {|bet| total += bet}
+    money - total > 0
+  end
+  
+  def to_s(number=hand_number)
+    "Hand #{number+1}: #{@hands[number]}: #{@hands[number].bj_value}"
+  end
+  
+  attr_reader :hand, :hands
+  attr_accessor :money
 end
+
