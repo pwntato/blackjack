@@ -1,3 +1,5 @@
+require 'card'
+
 class Deck
   def initialize
     @deck = []
@@ -24,4 +26,6 @@ class Deck
   def length
     @deck.length
   end
+  
+  attr_reader :deck
 end
