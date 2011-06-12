@@ -12,18 +12,15 @@ bet = 0
 deck = Deck.new
 deck.shuffle!
 
-while player.money - 5 > 0 do
+while player.money - 5 >= 0 do
   player.new_hand
   dealer.new_hand
   puts "\nYou have: $#{player.money}"
-  choice =''
-  until choice.to_i > 0 or choice[/quit/i]
-    puts "Enter a bet or exit to quit: "
-    choice = gets
-  end
-  break if choice[/quit/i]
+  choice = player.bet_or_quit
+  break if choice == :quit
+  bet = [choice]
+  player.money -= bet.last
   deck.shuffle!
-  bet = [ choice.to_i ]
   
   # deal
   table = BlackjackTable.new
@@ -37,19 +34,29 @@ while player.money - 5 > 0 do
   if dealer.hand.bj_value == 21
     puts "\nDealer has blackjack"
     if player.hand.bj_value == 21
-      puts "Draw: You have blackjack too"
+      puts "PUSH: You have blackjack too"
       next
     else
-      puts "You lose: You do not have blackjack"
-      player.money -= bet[0]
+      puts "You lose"
       next
     end
   end
   
   loop do
+    table.current_bet = bet[player.hand_number]
     table.options = [ :hit, :stand, :double ]
     while player.hand.bj_value < 21
-      player.can_split? ? table.options << :split : table.options - [:split]
+      # can split
+      if player.can_split? and player.money - bet[player.hand_number] >= 0
+        table.options << :split unless table.options.index(:split)
+      else
+        table.options -= [:split]
+      end
+      # can double
+      unless player.money - bet[player.hand_number] >= 0
+        table.options -= [:double]
+      end
+      
       case player.action(table)
         when :hit
           player << deck.deal
@@ -57,27 +64,28 @@ while player.money - 5 > 0 do
         when :stand
           break
         when :split
-          if player.split and player.can_afford(bet, bet[player.hand_number])
-            bet << bet[player.hand_number]
-            player << deck.deal
-            player.hands.last << deck.deal
-            player.hands.each_with_index do |hand, i|
-              puts player.to_s
-            end
+          bet << bet[player.hand_number]
+          player.money -= bet.last
+          player.split
+          player << deck.deal
+          player.hands.last << deck.deal
+          player.hands.each_with_index do |hand, i|
+            puts player.to_s(i)
           end
         when :double
-          if player.can_afford(bet, bet[player.hand_number])
-            bet[player.hand_number] *= 2
-            player << deck.deal
-            break
-          end
+          player.money -= bet[player.hand_number]
+          bet[player.hand_number] *= 2
+          player << deck.deal
+          break
       end
     end
+    
+    puts player.to_s if player.hands.length > 1
     
     break unless player.next_hand
   end  
   
-  if player.hands.select {|hand| hand.bj_value <= 21}.any?
+  if player.hands.reject {|hand| hand.bj_value > 21 or hand.is_blackjack?}.any?
     while dealer.hand.bj_value < 21
       case dealer.action(table)
         when :hit
@@ -92,19 +100,21 @@ while player.money - 5 > 0 do
     puts "\n#{dealer.to_s}"
     puts player.to_s(i)
     if hand.bj_value > 21
-      puts "    BUSTED"
-      player.money -= bet[i]
+      puts "    You lose: Busted"
     elsif dealer.hand.bj_value > 21
-      puts "    YOU WIN: Dealer busted"
-      player.money += bet[i]
+      puts "    YOU WIN $#{bet[i]}: Dealer busted"
+      player.money += bet[i] * 2
+    elsif hand.is_blackjack?
+      puts "    YOU WIN $#{bet[i]}: Blackjack"
+      player.money += bet[i] * 2      
     elsif hand.bj_value > dealer.hand.bj_value
-      puts "    YOU WIN"
-      player.money += bet[i]
+      puts "    YOU WIN $#{bet[i]}"
+      player.money += bet[i] * 2
     elsif hand.bj_value < dealer.hand.bj_value
       puts "    You lose"
-      player.money -= bet[i]
     else 
       puts "PUSH"
+      player.money += bet[i]
     end
   end
 end

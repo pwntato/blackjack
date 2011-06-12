@@ -13,12 +13,27 @@ class BlackjackPlayer
   def action(table)
     puts "\nDealer: #{table.dealer_cards.each { |card| card.to_s }}"
     puts "Hand #{hand_number+1}: #{@hand}: #{@hand.bj_value}"
-    puts "Money: #{@money}\n"
+    puts "Money: #{@money}"
+    puts "Bet: #{table.current_bet}\n"
     table.options.each_with_index do |option, i|
       puts "#{i+1}) #{option}"
     end
-    puts "What would you like to do: "
-    table.options[gets.to_i-1]
+    choice = 0
+    until choice > 0 and choice <= table.options.length
+      puts "What would you like to do: "
+      choice = gets.to_i
+    end
+    table.options[choice-1]
+  end
+  
+  def bet_or_quit
+    choice = ''
+    until (choice.to_i >= 5 and choice.to_i <= @money) or choice[/quit/i]
+      puts "Enter a bet ($5 - $#{@money}), quit, or nothing to bet $5: "
+      choice = gets
+      choice = '5' if choice.chomp == ''
+    end
+    choice[/quit/i] ? :quit : choice.to_i
   end
   
   def split
@@ -41,12 +56,6 @@ class BlackjackPlayer
   def new_hand
     @hand = BlackjackHand.new
     @hands = [ @hand ]
-  end
-  
-  def can_afford(bets, new_bet)
-    total = new_bet
-    bets.each {|bet| total += bet}
-    money - total > 0
   end
   
   def to_s(number=hand_number)

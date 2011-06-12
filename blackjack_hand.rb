@@ -29,6 +29,11 @@ class BlackjackHand
     new_hand
   end
   
+  def is_blackjack?
+    return false unless @cards.length == 2
+    @cards.select{|card| card.value == 11}.any? and @cards.select{|card| card.value == 10}.any?
+  end
+  
   def is_pair?
     @cards.length == 2 and @cards[0].value == @cards[1].value
   end
