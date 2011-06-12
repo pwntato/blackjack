@@ -5,8 +5,10 @@ require 'blackjack_hand'
 require 'blackjack_table'
 require 'blackjack_dealer'
 require 'blackjack_player'
+require 'wiki_blackjack_player'
 
-player = BlackjackPlayer.new
+#player = BlackjackPlayer.new
+player = WikiBlackjackPlayer.new
 dealer = BlackjackDealer.new
 bet = 0
 deck = Deck.new
