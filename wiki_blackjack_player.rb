@@ -1,31 +1,27 @@
 require 'blackjack_player'
+require 'db'
 
 class WikiBlackjackPlayer < BlackjackPlayer
-  STRATEGY = {
-              '2:2_2' => :split
-             }
-  
+  TABLE_NAME = 'wiki_player'
+
   def initialize
     new_hand
     @money = 100
     @bet_size = 5
+    @db = DB.new
   end
 
   def action(table)
-    puts situation_key(table.dealer_cards.first)
-    :stand
+    situation = situation(table.dealer_cards.first)
+    action = @db.action_for_situation(TABLE_NAME, situation).strip
   end
   
   def bet_or_quit
     @money - @bet_size >= 0 ? @bet_size : :quit
   end
   
-  def situation_key(dealer_card)
-    "#{hand_key}:#{dealer_card.value}"
-  end
-  
-  def hand_key
-    @hand.cards.sort_by(&:value).map{|card|card.value}.join('_')
+  def situation(dealer_card)
+    "#{@hand.hand_key}:#{dealer_card.value}"
   end
 end
 

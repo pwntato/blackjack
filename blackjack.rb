@@ -59,13 +59,13 @@ while player.money - 5 >= 0 do
         table.options -= [:double]
       end
       
-      case player.action(table)
-        when :hit
+      case player.action(table).to_s
+        when 'hit'
           player << deck.deal
           table.options -= [ :double ]
-        when :stand
+        when 'stand'
           break
-        when :split
+        when 'split'
           bet << bet[player.hand_number]
           player.money -= bet.last
           player.split
@@ -74,11 +74,13 @@ while player.money - 5 >= 0 do
           player.hands.each_with_index do |hand, i|
             puts player.to_s(i)
           end
-        when :double
+        when 'double'
           player.money -= bet[player.hand_number]
           bet[player.hand_number] *= 2
           player << deck.deal
           break
+        else
+          puts "unkown action"
       end
     end
     

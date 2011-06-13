@@ -18,7 +18,7 @@ class BlackjackHand
       value -= 10 if value > 21
       ace_count += 1
     end
-    @soft = (((full_value - value) % 10) != ace_count)
+    @soft = (((full_value - value) / 10) != ace_count)
     value
   end
   
@@ -36,6 +36,14 @@ class BlackjackHand
   
   def is_pair?
     @cards.length == 2 and @cards[0].value == @cards[1].value
+  end
+  
+  def hand_key
+    if @cards.length == 2
+      @cards.sort_by(&:value).map{|card|card.value}.join('_')
+    else
+      "#{bj_value}#{'_s' if @soft}"
+    end
   end
 
   def to_s

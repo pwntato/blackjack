@@ -25,3 +25,9 @@ actions:
   split - only for two equal value cards, first action, split to 4 hands, no hitting or blackjack on split aces
 dealer hits on 16
 
+
+situation keys
+  total:dealer
+  total_s:dealer
+  low_high:dealer
+
