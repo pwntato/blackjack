@@ -4,6 +4,9 @@ class BlackjackPlayer
   def initialize
     new_hand
     @money = 100
+    @hands_played = 0
+    @hands_won = 0
+    @max_money = @money
   end
   
   def <<(card)
@@ -63,6 +66,6 @@ class BlackjackPlayer
   end
   
   attr_reader :hand, :hands
-  attr_accessor :money
+  attr_accessor :money, :max_money, :hands_played, :hands_won
 end
 

@@ -34,6 +34,7 @@ while player.money - 5 >= 0 do
   
   # check blackjack situation
   if dealer.hand.bj_value == 21
+    player.hands_played += 1
     puts "\nDealer has blackjack"
     if player.hand.bj_value == 21
       puts "PUSH: You have blackjack too"
@@ -101,6 +102,7 @@ while player.money - 5 >= 0 do
   end
   
   player.hands.each_with_index do |hand, i|
+    player.hands_played += 1
     puts "\n#{dealer.to_s}"
     puts player.to_s(i)
     if hand.bj_value > 21
@@ -108,12 +110,15 @@ while player.money - 5 >= 0 do
     elsif dealer.hand.bj_value > 21
       puts "    YOU WIN $#{bet[i]}: Dealer busted"
       player.money += bet[i] * 2
+      player.hands_won += 1
     elsif hand.is_blackjack?
       puts "    YOU WIN $#{bet[i]}: Blackjack"
       player.money += bet[i] * 2      
+      player.hands_won += 1
     elsif hand.bj_value > dealer.hand.bj_value
       puts "    YOU WIN $#{bet[i]}"
       player.money += bet[i] * 2
+      player.hands_won += 1
     elsif hand.bj_value < dealer.hand.bj_value
       puts "    You lose"
     else 
@@ -121,9 +126,12 @@ while player.money - 5 >= 0 do
       player.money += bet[i]
     end
   end
+  player.max_money = [player.money, player.max_money].max
 end
 
-
+puts "\nHands played: #{player.hands_played}"
+puts "Hands won: #{player.hands_won}"
+puts "Max money: #{player.max_money}"
 
 
 

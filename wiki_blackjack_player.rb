@@ -8,6 +8,9 @@ class WikiBlackjackPlayer < BlackjackPlayer
     new_hand
     @money = 100
     @bet_size = 5
+    @hands_played = 0
+    @hands_won = 0
+    @max_money = @money
     @db = DB.new
   end
 
