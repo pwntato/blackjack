@@ -1,9 +1,7 @@
-require 'blackjack_player'
+require 'db_blackjack_player'
 require 'db'
 
-class WikiBlackjackPlayer < BlackjackPlayer
-  TABLE_NAME = 'wiki_player'
-
+class WikiBlackjackPlayer < DbBlackjackPlayer  
   def initialize
     new_hand
     @money = 100
@@ -12,19 +10,11 @@ class WikiBlackjackPlayer < BlackjackPlayer
     @hands_won = 0
     @max_money = @money
     @db = DB.new
-  end
-
-  def action(table)
-    situation = situation(table.dealer_cards.first)
-    action = @db.action_for_situation(TABLE_NAME, situation).strip
+    @table_name = 'wiki_player'
+    @hands_per_gen = -1
   end
   
-  def bet_or_quit
-    @money - @bet_size >= 0 ? @bet_size : :quit
-  end
-  
-  def situation(dealer_card)
-    "#{@hand.hand_key}:#{dealer_card.value}"
+  def update_stats 
   end
 end
 

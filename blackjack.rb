@@ -5,10 +5,12 @@ require 'blackjack_hand'
 require 'blackjack_table'
 require 'blackjack_dealer'
 require 'blackjack_player'
+require 'db_blackjack_player'
 require 'wiki_blackjack_player'
 
 #player = BlackjackPlayer.new
-player = WikiBlackjackPlayer.new
+#player = WikiBlackjackPlayer.new
+player = DbBlackjackPlayer.new('wiki_player')
 dealer = BlackjackDealer.new
 bet = 0
 deck = Deck.new
@@ -132,6 +134,8 @@ end
 puts "\nHands played: #{player.hands_played}"
 puts "Hands won: #{player.hands_won}"
 puts "Max money: #{player.max_money}"
+puts "Final winnings: #{player.money}"
+#player.update_stats
 
 
 

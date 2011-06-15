@@ -6,6 +6,42 @@ class DB
     @conn = PGconn.new({:dbname => 'blackjack'})       # connects as user running script
   end
   
+  def create_organisms_table
+    count = @conn.exec("select count(*) from pg_tables where tablename='organisms';").first['count']
+    if count.to_i == 0
+      query = "create table organisms (
+              table_name      char(255) PRIMARY KEY,
+              generation      integer,
+              gen_winnings    integer,
+              total_winnings  integer,
+              max_end_money   integer,
+              max_money       integer,
+              alive           boolean
+              );"
+      @conn.exec(query)
+    end
+  end
+  
+  def create_organism(table_name)
+    count = @conn.exec("select count(*) from organisms where table_name='#{table_name}';").first['count']
+    if count.to_i == 0
+      @conn.exec("insert into organisms (table_name, generation, gen_winnings,
+                  total_winnings, max_end_money, max_money, alive) 
+                  values ('#{table_name}', 0, 0, 0, 0, 0, true);")
+    end
+  end
+  
+  def update_stats(table_name, end_money, max_money)
+    org = @conn.exec("select * from organisms where table_name = '#{table_name}';").first
+    org['generation'] = org['generation'].to_i + 1
+    org['gen_winnings'] = end_money
+    org['total_winnings'] = org['total_winnings'].to_i + end_money
+    org['max_end_money'] = [ org['max_end_money'].to_i, end_money ].max
+    org['max_money'] = [ org['max_money'].to_i, max_money ].max
+    #@conn.exec(
+    puts %{update organisms set #{org.each {|k,v| "#{k}='#{v}'"}.join(', ')} where table_name = '#{table_name}';}
+  end
+  
   def create_gene_table(table_name)
     @conn.exec("drop table if exists #{table_name};")
     query = "create table #{table_name} (
