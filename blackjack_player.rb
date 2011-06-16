@@ -65,6 +65,9 @@ class BlackjackPlayer
     "Hand #{number+1}: #{@hands[number]}: #{@hands[number].bj_value}"
   end
   
+  def update_stats
+  end
+  
   attr_reader :hand, :hands
   attr_accessor :money, :max_money, :hands_played, :hands_won
 end

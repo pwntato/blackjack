@@ -135,7 +135,7 @@ puts "\nHands played: #{player.hands_played}"
 puts "Hands won: #{player.hands_won}"
 puts "Max money: #{player.max_money}"
 puts "Final winnings: #{player.money}"
-#player.update_stats
+player.update_stats
 
 
 

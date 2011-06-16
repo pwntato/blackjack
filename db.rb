@@ -33,13 +33,12 @@ class DB
   
   def update_stats(table_name, end_money, max_money)
     org = @conn.exec("select * from organisms where table_name = '#{table_name}';").first
-    org['generation'] = org['generation'].to_i + 1
-    org['gen_winnings'] = end_money
-    org['total_winnings'] = org['total_winnings'].to_i + end_money
-    org['max_end_money'] = [ org['max_end_money'].to_i, end_money ].max
-    org['max_money'] = [ org['max_money'].to_i, max_money ].max
-    #@conn.exec(
-    puts %{update organisms set #{org.each {|k,v| "#{k}='#{v}'"}.join(', ')} where table_name = '#{table_name}';}
+    @conn.exec("update organisms set generation=#{org['generation'].to_i + 1}, 
+                gen_winnings=#{end_money}, 
+                total_winnings=#{org['total_winnings'].to_i + end_money},
+                max_end_money=#{[ org['max_end_money'].to_i, end_money ].max},
+                max_money=#{[ org['max_money'].to_i, max_money ].max}
+                where table_name = '#{table_name}';")
   end
   
   def create_gene_table(table_name)
