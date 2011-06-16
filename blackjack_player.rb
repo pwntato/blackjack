@@ -68,6 +68,9 @@ class BlackjackPlayer
   def update_stats
   end
   
+  def make_baby
+  end
+  
   attr_reader :hand, :hands
   attr_accessor :money, :max_money, :hands_played, :hands_won
 end

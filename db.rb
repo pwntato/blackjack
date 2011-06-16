@@ -23,12 +23,16 @@ class DB
   end
   
   def create_organism(table_name)
-    count = @conn.exec("select count(*) from organisms where table_name='#{table_name}';").first['count']
-    if count.to_i == 0
+    if unique_name?(table_name)
       @conn.exec("insert into organisms (table_name, generation, gen_winnings,
                   total_winnings, max_end_money, max_money, alive) 
                   values ('#{table_name}', 0, 0, 0, 0, 0, true);")
     end
+  end
+  
+  def unique_name?(name)
+    @conn.exec("select count(*) from organisms 
+                where table_name='#{name}';").first['count'].to_i == 0
   end
   
   def update_stats(table_name, end_money, max_money)
@@ -50,8 +54,25 @@ class DB
     @conn.exec(query)
   end
   
+  def get_dna(table_name)
+    query = "select * from #{table_name};"
+    dna = {}
+    @conn.exec(query).each do |result| 
+      dna[result['situation'].strip] = result['action'].strip
+    end
+    
+    dna
+  end
+  
   def add_gene(table_name, situation, action)
     query = "insert into #{table_name} (situation, action) values ('#{situation}', '#{action}');"
+    @conn.exec(query)
+  end
+  
+  def add_genes(table_name, dna)
+    query = "insert into #{table_name} (situation, action) values " + 
+            dna.map {|situation, action| "('#{situation}', '#{action}')"}.join(', ') +
+            ";"
     @conn.exec(query)
   end
   

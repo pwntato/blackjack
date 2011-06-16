@@ -137,7 +137,7 @@ puts "Max money: #{player.max_money}"
 puts "Final winnings: #{player.money}"
 player.update_stats
 
-
+player.make_baby
 
 
 

@@ -2,6 +2,8 @@ require 'blackjack_player'
 require 'db'
 
 class DbBlackjackPlayer < BlackjackPlayer
+  MUTATION_RATE = 0.01
+  
   def initialize(table_name)
     new_hand
     @money = 100
@@ -32,6 +34,36 @@ class DbBlackjackPlayer < BlackjackPlayer
   
   def update_stats
     @db.update_stats(@table_name, @money, @max_money)
+  end
+  
+  def make_baby
+    name = new_organism_name
+    @db.create_organism(name)
+    @db.create_gene_table(name)
+    dna = @db.get_dna(@table_name)
+    mutations = dna.count * MUTATION_RATE
+    (0...mutations).each do
+      situation = dna.keys[rand(dna.length)]
+      dna[situation] = mutate_gene(situation, dna[situation])
+    end
+    
+    @db.add_genes(name, dna)
+    
+    DbBlackjackPlayer.new(name)
+  end
+  
+  def mutate_gene(situation, action)
+    action
+  end
+  
+  def new_organism_name
+    name = ''
+    char_set = [('a'..'z').to_a,('A'..'Z').to_a,(0..9).to_a].flatten  
+    until name != '' and @db.unique_name?(name)
+      name = (0..10).map{ char_set[rand(char_set.length)] }.join
+    end
+    
+    name
   end
 end
 
