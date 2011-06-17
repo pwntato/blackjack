@@ -53,12 +53,21 @@ class DbBlackjackPlayer < BlackjackPlayer
   end
   
   def mutate_gene(situation, action)
-    action
+    hand, dealer = situation.split(':')
+    hand = hand.split('_')
+    options = [ :hit, :stand ]
+    
+    if hand.length == 2 and hand.last != 's'
+      options << :double
+      options << :split if hand.first == hand.last
+    end
+    
+    options[rand*options.length]
   end
   
   def new_organism_name
     name = ''
-    char_set = [('a'..'z').to_a,('A'..'Z').to_a,(0..9).to_a].flatten  
+    char_set = [('a'..'z').to_a,('A'..'Z').to_a].flatten  
     until name != '' and @db.unique_name?(name)
       name = (0..10).map{ char_set[rand(char_set.length)] }.join
     end

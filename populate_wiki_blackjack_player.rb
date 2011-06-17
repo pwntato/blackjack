@@ -40,5 +40,5 @@ end
 table_name = 'wiki_player'
 db = DB.new
 db.create_gene_table(table_name)
-rows.each {|situation, action| db.add_gene(table_name, situation, action)}
+db.add_genes(table_name, rows.map{|situation, action| [ situation, action ]})
 
