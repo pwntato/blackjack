@@ -8,9 +8,9 @@ require 'blackjack_player'
 require 'db_blackjack_player'
 require 'wiki_blackjack_player'
 
-#player = BlackjackPlayer.new
-#player = WikiBlackjackPlayer.new
-player = DbBlackjackPlayer.new('wiki_player')
+#player = BlackjackPlayer.new       # player vs dealer
+player = WikiBlackjackPlayer.new    # basic strategy vs dealer
+#player = DbBlackjackPlayer.new('wiki_player')
 dealer = BlackjackDealer.new
 bet = 0
 deck = Deck.new
@@ -137,7 +137,7 @@ puts "Max money: #{player.max_money}"
 puts "Final winnings: #{player.money}"
 player.update_stats
 
-player.make_baby
+#player.make_baby
 
 
 
